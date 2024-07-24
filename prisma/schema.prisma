@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// TODO: add direction to shuttleRoute
+
+model Shuttle {
+  id           String         @id
+  name         String
+  price        Float
+  startTime    String
+  endTime      String
+  colonies     Json
+  shuttleStop  ShuttleStop[]
+  ShuttleRoute ShuttleRoute[]
+  deletedAt    DateTime?
+}
+
+model ShuttleStop {
+  id        String    @id
+  name      String
+  latitude  Decimal
+  longitude Decimal
+  shuttle   Shuttle[]
+  deletedAt DateTime?
+}
+
+model ShuttleRoute {
+  id                String    @id
+  route             Json
+  estimatedTripTime String
+  shuttleId         String
+  direction         String
+  shuttle           Shuttle   @relation(fields: [shuttleId], references: [id])
+  deletedAt         DateTime?
+}
